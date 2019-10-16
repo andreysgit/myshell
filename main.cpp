@@ -16,6 +16,16 @@ void clear(){
     printf("\033[H\033[J");
 }
 
+void pause(){
+
+    printf("Shell is paused. Press enter to continue");
+    while (cin.get()!='\n'){
+        }
+    printf("Shell unpaused");
+
+}
+
+
 void parse(char *line){
 
 
@@ -42,7 +52,7 @@ void loop() {
 
     char *argArray[99];
     cout << "User>";
-    cin >>
+    clear();
 //    cin.getline(myline,99);
 //    parse(myline);
 //    clear();
@@ -69,8 +79,9 @@ void loop() {
 int main(int argc, char** argv) {
 
     //while
-    loop();
+//    pause();
 
+    loop();
     return 0;
 }
 
