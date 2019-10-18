@@ -1,18 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <string>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
+
 
 using namespace std;
-/*
- * a text line>
- * input
- * Pass by ref
- * The reason to do this is so that
- * the function will have the power to change the value.
- *
- *
- */
 extern char **environ;
 
 
@@ -23,11 +15,6 @@ extern char **environ;
 //  Created by Andrey on 10/17/19.
 //  Copyright © 2019 Andrey. All rights reserved.
 //
-void execute(char **pString);
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
 void printEnviron(char **environ){
     for (char **env = environ; *env != 0; env++)
@@ -51,78 +38,72 @@ void pause(){
 }
 
 
-
-
 void loop() {
-//
-
-//    clear();
-
-//    clear();
-
-//    char *line = NULL;
-//    string **args = NULL;
-//    int status;
-    //user enters commands
-    //parsing happens to separate out arguments from command
-    //execute command
-//    status=1;
-
-//    while(status)
-//        parse(line);
-//        parse(line);
-//       status = run(args);
-
-
-//        status=0;
 
     }
-void printusrprompt(char** argv){
+
+void printUsrPrompt(char** argv){
     printf("<%s/SHELL>",argv[0]);
 };
 
-char ** parse(char *line){
+void tokenize(char *line, char *array[]){
 
-    char* array[100];
     int i=0;
-    char** parsedArray=NULL;
     char* token=NULL;
     token=strtok(line," ");
     array[i]=token;
 
     if(token!=NULL){
         while(token!=NULL){
-            printf("%s \n", token);
             array[i]=token; i++;
             token=strtok(NULL," ");
         }
     }
-    for (size_t i = 0; i < 99; i++) {
-        printf("%s,",array[i]);
-    }
 
-    return parsedArray;
+    printf("Tokenized: \n");
+    for (int k = 0; array[k]!=0 ; k++) {
+        printf("%s,", array[k]);
+
+    }
 
 }
 
+void execute(char* pString[]) {
+    printf("gets to echo");
+//    for (size_t i = 0; i < 99; i++) {
+//        printf("%s,",pString[i]);
+//    }
+}
+
+void echo(char *str[]){
+    printf("Got to echo");
+    for (int k = 1; str[k]!=0 ; k++) {
+        printf("%s ", str[k]);
+    }
+}
+void parse(char *array[]){
+    printf("Got to parse \n");
+    if (strncmp(array[0], "echo", 4) == 0){
+        echo(array);
+    }
+
+}
 int main(int argc, char** argv, char** envp) {
 
-
-    printusrprompt(argv);
+    char* array[100];
+    printUsrPrompt(argv);
     char* userInputString=NULL;
     size_t buff = 0;
     getline(&userInputString, &buff,stdin);
-    execute(parse(userInputString));
+    tokenize(userInputString, array);
+    parse(array);
+
 
 
     return 0;
 }
 
-void execute(char **pString) {
-    for (size_t i = 0; i < 99; i++) {
-        printf("%s,",pString[i]);
-    }
-}
+
 
 
 
