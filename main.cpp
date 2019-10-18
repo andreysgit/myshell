@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <string>
+#include <stdio.h>
 
 using namespace std;
 /*
@@ -11,9 +13,32 @@ using namespace std;
  *
  *
  */
+extern char **environ;
+
+
+//
+//  main.c
+//  andreyshell
+//
+//  Created by Andrey on 10/17/19.
+//  Copyright © 2019 Andrey. All rights reserved.
+//
+void execute(char **pString);
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+void printEnviron(char **environ){
+    for (char **env = environ; *env != 0; env++)
+    {
+        char *temp = *env;
+        printf("%s\n", temp);
+    }
+}
 
 void clear(){
-    printf("\033[H\033[J");
+    printf("\033[H\033[J\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }
 
 void pause(){
@@ -26,35 +51,13 @@ void pause(){
 }
 
 
-void parse(char *line){
 
-
-//    for (int i = 0; i < 99; i++) {
-//        while ((argArray[i] = strtok_r(line, " ", &line))){
-//            printf("%s ", argArray[i]);
-//        }
-//    }
-
-
-}
-
-void read(void){
-
-}
-
-void run(char** args){
-
-}
-
-//main loop
 
 void loop() {
+//
 
-    char *argArray[99];
-    cout << "User>";
-    clear();
-//    cin.getline(myline,99);
-//    parse(myline);
+//    clear();
+
 //    clear();
 
 //    char *line = NULL;
@@ -74,15 +77,51 @@ void loop() {
 //        status=0;
 
     }
+void printusrprompt(char** argv){
+    printf("<%s/SHELL>",argv[0]);
+};
+
+char ** parse(char *line){
+
+    char* array[100];
+    int i=0;
+    char** parsedArray=NULL;
+    char* token=NULL;
+    token=strtok(line," ");
+    array[i]=token;
+
+    if(token!=NULL){
+        while(token!=NULL){
+            printf("%s \n", token);
+            array[i]=token; i++;
+            token=strtok(NULL," ");
+        }
+    }
+    for (size_t i = 0; i < 99; i++) {
+        printf("%s,",array[i]);
+    }
+
+    return parsedArray;
+
+}
+
+int main(int argc, char** argv, char** envp) {
 
 
-int main(int argc, char** argv) {
+    printusrprompt(argv);
+    char* userInputString=NULL;
+    size_t buff = 0;
+    getline(&userInputString, &buff,stdin);
+    execute(parse(userInputString));
 
-    //while
-//    pause();
 
-    loop();
     return 0;
+}
+
+void execute(char **pString) {
+    for (size_t i = 0; i < 99; i++) {
+        printf("%s,",pString[i]);
+    }
 }
 
 
