@@ -2,14 +2,12 @@
 #include <vector>
 #include <cstring>
 #include <cstdio>
-#include <string>
 #include <zconf.h>
 #include <errno.h>
+#include <unistd.h>
 
 
 using namespace std;
-extern char **environ;
-
 
 //
 //  main.c
@@ -41,12 +39,8 @@ void paused(){
 }
 
 
-void loop() {
-
-    }
-
 void printUsrPrompt(char** argv){
-    printf("<%s/SHELL>",argv[0]);
+    printf("%s>",argv[0]);
 };
 
 int tokenize(char *line, char *array[]){
@@ -85,37 +79,51 @@ void echo(char *array[],int numArgs){
 }
 
 void cd(char *array[],int numArgs){
-    printf("Change directory\n");
+
+    printf("Change directory\n array[1]=%s numArgs = %d \n",array[1],numArgs);
     int error;
+    char buffer[PATH_MAX];
+    char *path = getcwd(buffer, PATH_MAX);
+    char *currentPath = path;
+    char *newPath = array[1];
+    printf("new path: %s\n",newPath);
     if(numArgs==1){
-        char cwd[PATH_MAX];
-        printf("%s", getcwd(cwd, sizeof(cwd)));
+        printf("No cd arg, printing working directory.\n");
+        printf("Current path: %s\n",currentPath);
     }
     if(numArgs==2){
-        error = chdir(array[1]);
-        printf("chdir error: %d. errorno = %d",error,errno);
+        error = chdir(newPath);
+        printf("chdir error: %d. errorno = %d\n",error,errno);
+        if(error!=0){
+            perror("cd");
+        }
     }
     if(numArgs>2){
+        printf("There should only be 1 argument to cd");
     }
 
 }
 
-int parse(char *array[],int numArgs){
+int parse(char *array[],int numArgs,char** environ){
     printf("Parsing \n");
 
-    if (strncmp(array[0], "echo", 4) == 0){
+    if (strncmp(array[0], "echo", 5) == 0){
         echo(array,numArgs);
     }
-    if (strncmp(array[0], "clear", 5) == 0){
+    if (strncmp(array[0], "clear", 6) == 0){
         clear();
     }
 
-    if (strncmp(array[0], "cd", 5) == 0){
+    if (strncmp(array[0], "cd", 2) == 0){
         cd(array,numArgs);
     }
 
     if (strncmp(array[0], "pause", 5) == 0){
         paused();
+    }
+
+    if (strncmp(array[0], "env", 4) == 0){
+        printEnviron(environ);
     }
 
     if (strncmp(array[0], "quit", 4) == 0){
@@ -130,7 +138,6 @@ int parse(char *array[],int numArgs){
 int main(int argc, char** argv, char** envp) {
 
     char* array[100];
-    printUsrPrompt(argv);
     char* userInputString=NULL;
     size_t buff = 0;
     int numArgs;
@@ -138,10 +145,9 @@ int main(int argc, char** argv, char** envp) {
     do{
         printUsrPrompt(argv);
         getline(&userInputString, &buff,stdin);
-        size_t sizeOfArray = (sizeof(array) / sizeof(array[0]));
         numArgs = tokenize(userInputString, array);
     }
-    while(parse(array,numArgs)!=1);
+    while(parse(array,numArgs,envp)!=1);
 
     return 0;
 }
